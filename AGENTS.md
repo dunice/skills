@@ -46,11 +46,33 @@ Rules:
 - Keep the voice and density of the file you are editing.
 - If a change adds more than ~50 lines of detail, put it in `references/` instead of inlining it.
 
+## Installability constraint
+
+This repo must stay installable with:
+
+```sh
+npx skills@latest add dunice/skills
+```
+
+That CLI (`vercel-labs/skills`) clones the repo and walks subdirectories for `SKILL.md` files. Two things break it:
+
+- **Never add a `SKILL.md` at the repo root.** The CLI stops descending once it finds one, so a root skill file hides every skill under `skills/` unless the user passes `--full-depth`.
+- **Directory name must equal the frontmatter `name`.** That name is what `--skill <name>` matches on.
+
+Verify after any structural change — this lists what the CLI can see without installing:
+
+```sh
+npx skills@latest add dunice/skills --list
+```
+
+Note for anyone documenting the CLI: `--skill` takes one name and must be **repeated** for several. A comma-separated list is not split and fails with `No matching skills found`.
+
 ## Adding a skill
 
 1. `mkdir -p skills/<name>`
 2. Write `SKILL.md` with the frontmatter above.
 3. Add a row to the **Available skills** table in `README.md`.
+4. Confirm the CLI sees it: `npx skills@latest add dunice/skills --list`.
 
 ## Conventions
 

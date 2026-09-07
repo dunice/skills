@@ -21,19 +21,54 @@ One directory per skill. The directory name is the skill name.
 |-------|----------|
 | [`scaffolding-nx-monorepo`](skills/scaffolding-nx-monorepo/SKILL.md) | Starting a new full-stack TypeScript repo — Nx, NestJS, Drizzle + Postgres, React, tRPC, Vitest, Biome, pnpm, Docker, CI. |
 
-## Using these skills
+## Installing
 
-Symlink or clone into a directory Claude Code scans:
+Install every skill in this repo with the [`skills`](https://github.com/vercel-labs/skills) CLI:
 
 ```sh
-# personal, available in every project
-ln -s "$PWD/skills/scaffolding-nx-monorepo" ~/.claude/skills/scaffolding-nx-monorepo
+npx skills@latest add dunice/skills
+```
 
-# or link the whole repo
+Installs project-level into `./.agents/skills/`, symlinked into every agent directory it detects (Claude Code, Codex, Cursor, GitHub Copilot, Warp, and others), and records `skills-lock.json`.
+
+### Installing only some skills
+
+Pass `--skill` (`-s`) with a skill name. Repeat the flag for several skills — a comma-separated list is **not** parsed and fails with `No matching skills found`:
+
+```sh
+npx skills@latest add dunice/skills --skill scaffolding-nx-monorepo
+
+# several skills: repeat the flag
+npx skills@latest add dunice/skills --skill skill-one --skill skill-two
+```
+
+List what a repo offers first, without installing anything:
+
+```sh
+npx skills@latest add dunice/skills --list
+```
+
+Other flags worth knowing:
+
+| Flag | Effect |
+|------|--------|
+| `-s, --skill <name>` | Install only that skill (`'*'` for all). Repeat for several. |
+| `-a, --agent <agent>` | Install for that agent only, e.g. `--agent claude-code`, instead of every agent detected. |
+| `-g, --global` | Install user-level (`~/.claude/skills/`) instead of project-level. |
+| `-l, --list` | Show available skills and exit. |
+| `-y, --yes` | Skip prompts. Implied when a coding agent is driving. |
+| `--all` | Shorthand for `--skill '*' --agent '*' -y`. |
+
+Update later with `npx skills@latest update`, remove with `npx skills@latest remove -s scaffolding-nx-monorepo`.
+
+### Without the CLI
+
+Symlink directly into a directory Claude Code scans:
+
+```sh
 git clone git@github.com:dunice/skills.git ~/Projects/dunice/skills
-for d in ~/Projects/dunice/skills/skills/*/; do
-  ln -s "$d" ~/.claude/skills/"$(basename "$d")"
-done
+ln -s ~/Projects/dunice/skills/skills/scaffolding-nx-monorepo \
+      ~/.claude/skills/scaffolding-nx-monorepo
 ```
 
 Project-scoped instead: link into `<project>/.claude/skills/`.
