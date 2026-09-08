@@ -20,6 +20,7 @@ One directory per skill. The directory name is the skill name.
 | Skill | Use when |
 |-------|----------|
 | [`scaffolding-nx-monorepo`](skills/scaffolding-nx-monorepo/SKILL.md) | Starting a new full-stack TypeScript repo — Nx, NestJS, Drizzle + Postgres, React, tRPC, Vitest, Biome, pnpm, Docker, CI. |
+| [`writing-commit-messages`](skills/writing-commit-messages/SKILL.md) | About to run `git commit`, amend or reword — one-line Conventional Commits subject, no body, no attribution trailers. |
 
 ## Installing
 
