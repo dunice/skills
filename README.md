@@ -20,7 +20,9 @@ One directory per skill. The directory name is the skill name.
 | Skill | Use when |
 |-------|----------|
 | [`scaffolding-nx-monorepo`](skills/scaffolding-nx-monorepo/SKILL.md) | Starting a new full-stack TypeScript repo — Nx, NestJS, Drizzle + Postgres, React, tRPC, Vitest, Biome, pnpm, Docker, CI. |
-| [`writing-commit-messages`](skills/writing-commit-messages/SKILL.md) | About to run `git commit`, amend or reword — one-line Conventional Commits subject, no body, no attribution trailers. |
+| [`writing-commit-messages`](skills/writing-commit-messages/SKILL.md) | About to run `git commit`, amend or reword, or splitting a day of mixed work — one-line Conventional Commits subject by default, no attribution trailers. |
+| [`managing-github-pull-requests`](skills/managing-github-pull-requests/SKILL.md) | Opening or updating a PR with `gh` — draft by default, body from a file, reviewers, labels, screenshots, ready-for-review. |
+| [`writing-pull-request-descriptions`](skills/writing-pull-request-descriptions/SKILL.md) | Opening a PR or rewriting its description — self-review and scope gates first, then a four-section body a reviewer can predict the diff from. |
 
 ## Installing
 
