@@ -94,11 +94,19 @@ export function parsePaymentEvent(raw: string): Parsed<Payment | null> {
   };
 }
 
+function paidCentsAfter(order: Order, event: Payment): number {
+  if (event.type === 'payment.succeeded') {
+    return event.amountCents;
+  }
+
+  return order.paidCents;
+}
+
 export function applyPayment(order: Order, event: Payment): Order {
   return {
     ...order,
     status: NEXT_STATUS[event.type],
-    paidCents: event.type === 'payment.succeeded' ? event.amountCents : order.paidCents,
+    paidCents: paidCentsAfter(order, event),
     updatedAt: new Date(),
   };
 }
@@ -119,7 +127,7 @@ export function applyPayment(order: Order, event: Payment): Order {
 try {
   order = await loadOrder(orderId);
 } catch (err) {
-  const message = err instanceof Error ? err.message : 'unknown error loading order';
+  const message = errorMessage(err, 'loading order');
 
   return { kind: 'load_failed', orderId, message };
 }
@@ -220,6 +228,8 @@ export function parseShipmentCsvRow(row: readonly string[]): ParsedRow {
     deliveredAt = deliveredAtRaw;
   }
 
+  const tags = tagsRaw === '' ? [] : tagsRaw.split(';');
+
   return {
     ok: true,
     value: {
@@ -227,7 +237,7 @@ export function parseShipmentCsvRow(row: readonly string[]): ParsedRow {
       state: stateRaw,
       weightKg,
       destination: { country, postcode },
-      tags: tagsRaw === '' ? [] : tagsRaw.split(';'),
+      tags,
       ...(deliveredAt !== undefined ? { deliveredAt } : {}),
     },
   };

@@ -201,6 +201,87 @@ if (!isShipmentState(state)) {
 
 The blank line separates a guard from the declarations above it. A run of early returns packed against each other reads as one block; spaced, each is a condition you can scan.
 
+**A ternary chooses between two values, and nothing more.** One condition, two values, on a line you take in at a glance — in a `return` or assigned to a named `const`. That much is good code; keep writing it.
+
+Past that point the fix is always the same: **make the choice above, name it, then use the name.**
+
+| Situation | Instead |
+|---|---|
+| The line runs past 80 characters | Hoist the choice to a `const` on its own line |
+| Either branch holds another ternary | An `if`/`return` function, or a lookup table when there are three or more outcomes |
+| It sits inside an object literal, an array, or an argument list | A `const` above the literal, so the reader parses structure or logic, never both at once |
+
+80 characters is where a ternary starts costing more than it saves. **100 is the hard ruler: a ternary crossing it is not a judgment call, it is over.**
+
+**Measure the whole expression, not the physical line.** Wrapping a long ternary across three lines does not make it short — it makes it a long ternary with line breaks in it. If `condition ? a : b` does not fit on one line under 80 characters, it is not a ternary any more; it is an `if`/`return` function or a lookup table.
+
+```ts
+// ❌ wrapped, therefore "not long" — it is 86 characters of ternary
+const seatLine = flags.isOverSeats
+  ? `${account.seatsUsed} of ${account.seatsLicensed} seats (over by ${seatOverage})`
+  : `${account.seatsUsed} of ${account.seatsLicensed} seats`;
+
+// ✅
+function seatLine(used: number, licensed: number): string {
+  const base = `${used} of ${licensed} seats`;
+
+  if (used <= licensed) {
+    return base;
+  }
+
+  return `${base} (over by ${used - licensed})`;
+}
+```
+
+```ts
+// ❌ nested, inside an object literal, 110 characters
+return {
+  ...view,
+  ...(job.state === 'failed' ? { retryHint: severity === 'error' ? 'Out of retries' : 'Will retry' } : {}),
+};
+
+// ✅ the choice is made once, named, then used
+const retryHint = severity === 'error' ? 'Out of retries' : 'Will retry';
+
+return {
+  ...view,
+  ...(job.state === 'failed' ? { retryHint } : {}),
+};
+```
+
+Three or more outcomes is never a ternary chain — it is a table, and the table is checkable:
+
+```ts
+// ❌ a chain nobody can diff
+const label = state === 'queued' ? 'Queued' : state === 'running' ? 'Running' : 'Done';
+
+// ✅
+const LABELS = {
+  queued: 'Queued',
+  running: 'Running',
+  succeeded: 'Succeeded',
+} as const satisfies Record<JobState, string>;
+
+const label = LABELS[state];
+```
+
+**The optional-field spread is a fixed idiom, not a value ternary**, and it has exactly one shape: a condition, `{ key }` where `key` is a name already bound above, and `{}`.
+
+```ts
+// ❌ the branch computes — and wrapping it over three lines does not make it the idiom
+...(signals.isPastDue
+  ? { amountLine: `${formatDollars(account.pastDueCents)} overdue` }
+  : {}),
+
+// ✅ bind the name first; the spread stays the idiom
+const amountLine = `${formatDollars(account.pastDueCents)} overdue`;
+
+...(signals.isPastDue ? { amountLine } : {}),
+```
+
+Anything else in either branch — a computed value, a second ternary, a nested object — is a value ternary inside an object literal, and gets a name first.
+
+
 ## Contract
 
 | Property | How to check |
@@ -216,6 +297,7 @@ The blank line separates a guard from the declarations above it. A run of early 
 | ESM | `grep -n 'require(' src` returns nothing; type-only imports use `import type` |
 | `T[]` not `Array<T>` | `grep -nE 'Array<' src` |
 | Formatting | Value literals of 3+ properties break one per line with a trailing comma, nested ones included; every `if` has braces and a blank line above |
+| Ternaries | One condition, two values, on one line under 80 characters (measured whole, not per wrapped line), never nested, never inside a literal or argument list — otherwise a named `const` or an `if`/`return` function |
 | Tested | New behavior has a test, including one failure case of each new tagged error. No runner configured is not an exemption — find the one the repo uses, or say plainly that you wrote none |
 
 ## Worked Examples
@@ -257,6 +339,10 @@ Read them when you are writing one of those shapes: [references/worked-examples.
 - `enum`, `require(`, or `Array<T>` in a new file
 - You are about to write a comment explaining why an unsound line is actually fine
 - A multi-property object literal is on one line, or an `if` body shares the condition's line
+- A line holds two `?` operators, or a ternary that runs past 80 characters
+- A ternary is wrapped across lines because it would not fit on one
+- A `?` sits inside an object literal, array or argument list and is not the optional-field spread
+- A conditional spread whose `{ key }` branch computes a value instead of using a bound name
 
 **All of these mean: write the guard, or return the new value.**
 
