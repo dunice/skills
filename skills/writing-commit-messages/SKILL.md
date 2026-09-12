@@ -58,10 +58,33 @@ Read the rule it returns and follow it — including its scope. "Commits affecti
 | Element | Rule |
 |---|---|
 | type | `feat` `fix` `docs` `refactor` `test` `chore` `build` `ci` `perf` `style` `revert` — lowercase, per Conventional Commits |
-| scope | optional, lowercase, the area touched — `api`, `pricing`, `f01` |
+| scope | optional, lowercase, the **area** touched — `api`, `pricing`, `skill`. Aim ≤12 chars |
 | subject | **Capitalized first letter**, imperative mood, no trailing period |
 | length | ≤50 chars, hard ceiling 72 |
 | breaking | `!` before the colon — `feat(api)!: Drop the v1 token endpoint` |
+
+### Scope names the area, not the path
+
+The scope is a label for *where* the change lives, not a copy of the directory, package or file name. Shrink a long name to what it means. The description is what a reader needs; the scope is the cheapest thing to cut.
+
+| Path or package | Scope |
+|---|---|
+| `skills/writing-pull-request-descriptions/` | `skill` — or `pr-desc` when several skills change separately |
+| `packages/analytics-event-ingestion-service/` | `ingest` |
+| `packages/customer-notification-preferences/` | `notifs` |
+| `src/billing/invoice/proration.ts` | `billing` |
+
+Budget the line: `type(scope): ` should cost ~15 characters, leaving ~35 for the description. A scope longer than the description it precedes is the wrong scope.
+
+```
+❌ feat(writing-pull-request-descriptions): Add skill        ← 32 chars of scope, 9 of meaning
+✅ feat(skill): Add a PR description skill
+
+❌ feat(analytics-event-ingestion-service): Deduplicate replayed events   ← 68 chars
+✅ feat(ingest): Drop replayed events by producer id
+```
+
+Reuse a short scope the history already uses for that area. Long scopes in the log are not a convention to preserve — they are the thing this rule fixes. When no short label is clearer than none, drop the scope: `feat: Add a PR description skill`.
 
 The imperative test: "If applied, this commit will **[your subject]**." If that sentence doesn't read, the mood is wrong.
 
@@ -148,6 +171,9 @@ Any subagent whose task ends in a commit must carry this rule verbatim in its pr
 | "CONTRIBUTING.md says billing commits need reasoning, but the user didn't ask" | A documented policy is permission. Follow it. |
 | "there is probably a convention here somewhere" | Then grep for it. An unread policy is not a policy. |
 | "the policy covers billing, and this is important too" | Follow the policy's scope, not its spirit-as-you-read-it. |
+| "truncating the scope would break the history's convention" | A long scope is not a convention worth 30 characters. Shorten it; the area is the same. |
+| "the package is called analytics-event-ingestion-service, that is the scope" | That is its name. The scope is its meaning. |
+| "68 chars is still under the 72 ceiling" | 72 is the ceiling, 50 is the rule. The scope is what to cut to reach it. |
 | "make the record useful to whoever reads it in six months" | `git log --stat` and the diff are that record. |
 | "I flagged it rather than silently relying on it" | Announcing a violation is still a violation. |
 | "committing it all at once is what the user asked for" | They asked you to commit the work, not to fuse it. Split it. |
@@ -167,6 +193,7 @@ Any subagent whose task ends in a commit must carry this rule verbatim in its pr
 - You are about to run `git add -A` before a commit
 - One commit is taking every file on a branch you worked on all day
 - Your subject is past tense, ends in a period, or starts lowercase after the colon
+- Your scope is longer than your description, or is a directory path pasted in
 
 **All of these mean: go back to the rule.**
 
