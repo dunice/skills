@@ -21,6 +21,7 @@ One directory per skill. The directory name is the skill name.
 |-------|----------|
 | [`scaffolding-nx-monorepo`](skills/scaffolding-nx-monorepo/SKILL.md) | Starting a new full-stack TypeScript repo — Nx, NestJS, Drizzle + Postgres, React, tRPC, Vitest, Biome, pnpm, Docker, CI. |
 | [`writing-typescript`](skills/writing-typescript/SKILL.md) | Writing or reviewing TypeScript — external input validated at one boundary, type guards instead of `as`, new values instead of mutation, tagged errors instead of strings. |
+| [`refactoring-safely`](skills/refactoring-safely/SKILL.md) | Restructuring code that already works — pin the behavior in tests first, one named move per commit, shape and behavior never in the same commit. |
 | [`writing-commit-messages`](skills/writing-commit-messages/SKILL.md) | About to run `git commit`, amend or reword, or splitting a day of mixed work — one-line Conventional Commits subject by default, no attribution trailers. |
 | [`managing-github-pull-requests`](skills/managing-github-pull-requests/SKILL.md) | Opening or updating a PR with `gh` — draft by default, body from a file, reviewers, labels, screenshots, ready-for-review. |
 | [`writing-pull-request-descriptions`](skills/writing-pull-request-descriptions/SKILL.md) | Opening a PR or rewriting its description — self-review and scope gates first, then a four-section body a reviewer can predict the diff from. |
