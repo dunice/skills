@@ -113,6 +113,34 @@ gh issue view 1847 --json number,title   # resolves → use it. doesn't → no t
 
 **No key in the branch means no ticket line at all.** Not "No ticket.", not "N/A", not `Closes #TODO`, not a note about why you didn't file one. Give the reason the work happened and stop — an unreferenced PR is a normal PR.
 
+### Diagram
+
+**Only when the shape of the change is hard to hold in words** — a request now passes through a new hop, a module moved between layers, a data flow gained a branch, two things that used to talk directly now go through a third. Everything else gets no diagram.
+
+| Rule | Why |
+|---|---|
+| ASCII or box-drawing characters in a fenced block | Mermaid renders on GitHub and nowhere else — not in `gh pr view`, not in email, not in a terminal |
+| Under ~12 lines, under ~72 columns | Past that it needs study, and a diagram that needs study has replaced the problem it solved |
+| Draw only the boxes that appear in the diff, named as the files are named | A redrawn architecture the reviewer already knows adds nothing |
+| Before/after, side by side or stacked | The change is the delta. One picture of the end state hides it |
+
+```
+before                 after
+
+client                 client
+  |                      |
+  v                      v
+server.js            rateLimit.js   <- new, 429 + Retry-After
+  |                      |
+  v                      v
+handler              server.js
+                         |
+                         v
+                     handler
+```
+
+**If the before and after would look the same, there is nothing to draw.** Delete it and let *What changed* carry the PR.
+
 ### How to review
 
 Where to start and what to focus on:
@@ -139,6 +167,7 @@ Nothing user-visible changed? Omit this section entirely. Do not write "N/A — 
 | Title prefix | Tracker key → `KEY-123: ` prefix. Issue number or no ticket → summary alone |
 | Ticket handled | Key in the branch → it appears in the body. No key → no ticket line, no placeholder, no invented host |
 | Starting point named | "How to review" names a specific file |
+| Diagram earns its place | Included only if the change moves or re-routes something. Fenced ASCII, ~12 lines, before/after |
 | Visuals present | Any user-visible change has an image, GIF or recording |
 | No self-review debt | The body contains no known defect, TODO, or apology |
 
@@ -162,6 +191,23 @@ carries `X-RateLimit-Limit` and `X-RateLimit-Remaining`. Counters are in-process
 TICKET-412. A single misbehaving webhook caller saturated the service twice
 last week.
 
+## Diagram
+
+```
+before                 after
+
+client                 client
+  |                      |
+  v                      v
+server.js            rateLimit.js   <- new, 429 + Retry-After
+  |                      |
+  v                      v
+handler              server.js
+                         |
+                         v
+                     handler
+```
+
 ## How to review
 
 Start at `src/rateLimit.js` — the whole policy is the two constants at the top
@@ -183,6 +229,8 @@ pruned on access only. Behind more than one instance the effective limit is
 | "They're tiny unrelated changes, splitting is more overhead than it's worth" | Size isn't the cost. Each unrelated change adds a reason the whole PR can be blocked. |
 | "The typo fix is already in the diff, taking it out is churn" | `git restore` is not churn. Shipping two things as one is. |
 | "The reviewer should know the limitations" | A limitation needing a decision goes in *How to review*. A known defect goes in a commit, before you open the PR. |
+| "A diagram never hurts" | One that redraws the system the reviewer already knows costs them a read and tells them nothing. No re-routing, no diagram. |
+| "Mermaid looks better than ASCII" | It renders on github.com and nowhere else. `gh pr view`, email notifications and terminals get the raw source. |
 | "Listing every file makes it easier to follow" | It duplicates the diff and hides the two lines that matter. Give them a map, not a transcript. |
 | "It's one feature, it's just a big one" | Then it's a stack of PRs. Past 400 lines the review stops finding bugs. |
 | "`origin/HEAD` points at `trunk`, so that's the base" | The rule is the user's branch, then `main`, then `master`, then ask. `origin/HEAD` is not step 3. |
@@ -204,6 +252,8 @@ pruned on access only. Behind more than one instance the effective limit is
 - You are writing a section called "Known limitations", "Not ready to merge", or "TODO before merge"
 - You are typing "happy to split this out if you'd rather"
 - Your body lists every changed file with a description of each
+- Your diagram would look identical before and after the change
+- Your diagram has more boxes than the diff has files, or is written in Mermaid
 - The diff includes a file you'd struggle to justify if asked
 - `--stat` says 400+ lines and you are writing the description anyway
 - The only mention of the ticket is in the title
