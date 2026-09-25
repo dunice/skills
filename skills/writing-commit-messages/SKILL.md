@@ -9,7 +9,7 @@ description: Use when about to run git commit, amend or reword a commit, stage w
 
 A commit message is one line by default: a Conventional Commits subject, and nothing after it.
 
-Two things change that, and only these two:
+Three conditions change what you write, and only these three:
 
 | Condition | Effect |
 |---|---|
@@ -42,14 +42,17 @@ Two sources, and you must have **actually read** the text — not assumed it exi
 2. **A documented policy**: `CONTRIBUTING.md`, `CLAUDE.md` / `AGENTS.md`, a repo doc or commit-template, or a stored AI memory recording the decision.
 
 ```bash
-grep -rniE 'commit (message|body)' CONTRIBUTING.md CLAUDE.md AGENTS.md docs/ .gitmessage 2>/dev/null
+grep -rniE 'commit (message|body)|conventional commits' CONTRIBUTING.md CLAUDE.md AGENTS.md .github/ docs/ .gitmessage 2>/dev/null
+git config --get commit.template                # a template can live outside the repo
 ```
+
+The grep does not reach a stored memory. If your harness loads one, read it too.
 
 Read the rule it returns and follow it — including its scope. "Commits affecting billing must document the reasoning" permits a body on billing commits, not on every commit.
 
 **Not permission:** a reviewer's comment, a Slack thread, a PR template, team lore, a policy you believe probably exists but did not open. Those leave the default in place.
 
-**What never earns a body on its own:** a large diff, a subtle diff, a behaviour change, a reviewer who likes context, six-months-from-now readers, or your own judgment that this one deserves it. Only the user or a documented policy does. Detail that wants to be an unrequested body goes in your reply to the user, or in the docs the commit touches. The diff is the body.
+**What never earns a body on its own:** a large diff, a subtle diff, a behavior change, a reviewer who likes context, six-months-from-now readers, or your own judgment that this one deserves it. Only the user or a documented policy does. Detail that wants to be an unrequested body goes in your reply to the user, or in the docs the commit touches. The diff is the body.
 
 ## Subject Line Format
 
@@ -59,7 +62,7 @@ Read the rule it returns and follow it — including its scope. "Commits affecti
 |---|---|
 | type | `feat` `fix` `docs` `refactor` `test` `chore` `build` `ci` `perf` `style` `revert` — lowercase, per Conventional Commits |
 | scope | optional, lowercase, the **area** touched — `api`, `pricing`, `skill`. Aim ≤12 chars |
-| subject | **lowercase all letters**, imperative mood, no trailing period |
+| subject | **lowercase**, imperative mood, no trailing period. Acronyms and code identifiers keep their case — `PR`, `CSV`, `startOfQuarter` |
 | length | ≤50 chars, hard ceiling 72 |
 | breaking | `!` before the colon — `feat(api)!: drop the v1 token endpoint` |
 
@@ -77,10 +80,10 @@ The scope is a label for *where* the change lives, not a copy of the directory, 
 Budget the line: `type(scope): ` should cost ~15 characters, leaving ~35 for the description. A scope longer than the description it precedes is the wrong scope.
 
 ```
-❌ feat(writing-pull-request-descriptions): Add skill        ← 32 chars of scope, 9 of meaning
+❌ feat(writing-pull-request-descriptions): Add skill        ← 33 chars of scope, 9 of meaning, capitalized
 ✅ feat(skill): add a PR description skill
 
-❌ feat(analytics-event-ingestion-service): Deduplicate replayed events   ← 68 chars
+❌ feat(analytics-event-ingestion-service): Deduplicate replayed events   ← 68 chars, capitalized
 ✅ feat(ingest): drop replayed events by producer id
 ```
 
@@ -93,12 +96,10 @@ The imperative test: "If applied, this commit will **[your subject]**." If that 
 ✅ docs: require plural table names
 ✅ feat(pricing)!: round discounts to the cent
 ❌ fix(auth): rejected expired tokens         ← past tense
-❌ fix(auth): Fixes the token bug.            ← indicative, trailing period
-❌ Fixed the bug.                             ← no type, past tense, period
-❌ chore: Updates                             ← says nothing
+❌ fix(auth): Fixes the token bug.            ← indicative, capitalized, trailing period
+❌ Fixed the bug.                             ← no type, past tense, capitalized, period
+❌ chore: Updates                             ← says nothing, capitalized
 ```
-
-The type and the description after the colon are both lowercase.
 
 ## Writing the Body
 
@@ -130,19 +131,19 @@ A day of work is not one commit. When the branch holds several unrelated changes
 Stage by path so nothing rides along:
 
 ```bash
-git add -- src/utils/date.ts                    # 1. helper the feature needs
+git add -- src/utils/date.ts src/utils/date.test.ts       # 1. helper the feature needs
 git commit -m "feat(utils): add startOfQuarter date helper"
 
-git add -- package.json pnpm-lock.yaml          # 2. dependency it pulls in
+git add -- package.json pnpm-lock.yaml                    # 2. dependency it pulls in
 git commit -m "build(deps): add papaparse for CSV export"
 
 git add -- src/reports/exporter.ts src/reports/exporter.test.ts
-git commit -m "feat(reports): add CSV export"   # 3. the feature itself
+git commit -m "feat(reports): add CSV export"             # 3. the feature itself
 
-git add -- src/auth/session.ts                  # 4. unrelated bugfix
+git add -- src/auth/session.ts src/auth/session.test.ts   # 4. unrelated bugfix
 git commit -m "fix(auth): expire sessions that never timed out"
 
-git status --short                              # nothing left behind
+git status --short                                        # nothing left behind
 ```
 
 | Rule | Why |
@@ -157,7 +158,7 @@ Don't reorder history to make it prettier — split what is uncommitted, and lea
 
 ## Dispatching Subagents
 
-Any subagent whose task ends in a commit must carry this rule verbatim in its prompt. Dispatched agents inherit the harness attribution default and will append trailers otherwise — this is measured, not theoretical.
+Any subagent whose task ends in a commit must carry **The Rule** section and the **Subject Line Format** table verbatim in its prompt — the whole skill if its task may need a body or a split. Dispatched agents inherit the harness attribution default and will append trailers otherwise — this is measured, not theoretical.
 
 ## Rationalizations (verbatim from baseline testing)
 
@@ -178,14 +179,14 @@ Any subagent whose task ends in a commit must carry this rule verbatim in its pr
 | "I flagged it rather than silently relying on it" | Announcing a violation is still a violation. |
 | "committing it all at once is what the user asked for" | They asked you to commit the work, not to fuse it. Split it. |
 | "splitting means re-staging twelve files, faster to do one commit" | Two minutes of `git add --`. The history outlives the two minutes. |
-| "this commit changes the commit-message rule, so it follows the new rule" | A commit that edits a policy file is still a commit. The rule in force is the one in this skill. |
+| "this commit changes the commit-message rule, so it follows the new rule" | A commit that edits a policy file is still a commit. The rule in force is the version committed in `HEAD`; your edit governs only the commits after it lands. |
 | "the last person who left a bare one-line commit got it reverted" | Reverts are about the code, not the message. Team lore does not amend this rule. |
 
 ## Red Flags — STOP
 
-- You are typing `<<'EOF'` after `git commit`
+- You are typing `<<'EOF'`, `-F -` or `--template` after `git commit`
 - The string `Co-Authored-By` or `Claude-Session` appears in your command
-- You are passing a second `-m` and the user never asked for a body
+- You are passing a second `-m` and neither the user nor a documented policy asked for a body
 - You are declining to write a body the user or a documented policy asked for
 - You are adding a body on the strength of a policy you did not open
 - You think "this commit is big enough to deserve a body"
