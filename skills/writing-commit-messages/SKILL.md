@@ -53,7 +53,7 @@ Read the rule it returns and follow it — including its scope. "Commits affecti
 
 ## Subject Line Format
 
-`type(scope): Subject`
+`type(scope): subject`
 
 | Element | Rule |
 |---|---|
@@ -61,7 +61,7 @@ Read the rule it returns and follow it — including its scope. "Commits affecti
 | scope | optional, lowercase, the **area** touched — `api`, `pricing`, `skill`. Aim ≤12 chars |
 | subject | **lowercase all letters**, imperative mood, no trailing period |
 | length | ≤50 chars, hard ceiling 72 |
-| breaking | `!` before the colon — `feat(api)!: Drop the v1 token endpoint` |
+| breaking | `!` before the colon — `feat(api)!: drop the v1 token endpoint` |
 
 ### Scope names the area, not the path
 
@@ -84,7 +84,7 @@ Budget the line: `type(scope): ` should cost ~15 characters, leaving ~35 for the
 ✅ feat(ingest): drop replayed events by producer id
 ```
 
-Reuse a short scope the history already uses for that area. Long scopes in the log are not a convention to preserve — they are the thing this rule fixes. When no short label is clearer than none, drop the scope: `feat: Add a PR description skill`.
+Reuse a short scope the history already uses for that area. Long scopes in the log are not a convention to preserve — they are the thing this rule fixes. When no short label is clearer than none, drop the scope: `feat: add a PR description skill`.
 
 The imperative test: "If applied, this commit will **[your subject]**." If that sentence doesn't read, the mood is wrong.
 
@@ -98,14 +98,14 @@ The imperative test: "If applied, this commit will **[your subject]**." If that 
 ❌ chore: Updates                             ← says nothing
 ```
 
-The type stays lowercase — it is a keyword, not prose. Capitalization applies to the description after the colon.
+The type and the description after the colon are both lowercase.
 
 ## Writing the Body
 
 Two `-m` flags. Git inserts the blank line between them for you.
 
 ```bash
-git commit -m "fix(auth): Stamp sessions with a 30-day expiry" \
+git commit -m "fix(auth): stamp sessions with a 30-day expiry" \
            -m "Sessions never expired: the check compared createdAt with < and
 the TTL was never applied.
 
@@ -140,7 +140,7 @@ git add -- src/reports/exporter.ts src/reports/exporter.test.ts
 git commit -m "feat(reports): add CSV export"   # 3. the feature itself
 
 git add -- src/auth/session.ts                  # 4. unrelated bugfix
-git commit -m "fix(auth): Expire sessions that never timed out"
+git commit -m "fix(auth): expire sessions that never timed out"
 
 git status --short                              # nothing left behind
 ```
