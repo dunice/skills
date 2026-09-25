@@ -22,7 +22,7 @@ Two things change that, and only these two:
 ## The Rule
 
 ```bash
-git commit -m "type(scope): Subject"
+git commit -m "type(scope): subject"
 ```
 
 One `-m`, subject only. That is the default and it needs no justification.
@@ -59,7 +59,7 @@ Read the rule it returns and follow it — including its scope. "Commits affecti
 |---|---|
 | type | `feat` `fix` `docs` `refactor` `test` `chore` `build` `ci` `perf` `style` `revert` — lowercase, per Conventional Commits |
 | scope | optional, lowercase, the **area** touched — `api`, `pricing`, `skill`. Aim ≤12 chars |
-| subject | **Capitalized first letter**, imperative mood, no trailing period |
+| subject | **lowercase all letters**, imperative mood, no trailing period |
 | length | ≤50 chars, hard ceiling 72 |
 | breaking | `!` before the colon — `feat(api)!: Drop the v1 token endpoint` |
 
@@ -78,10 +78,10 @@ Budget the line: `type(scope): ` should cost ~15 characters, leaving ~35 for the
 
 ```
 ❌ feat(writing-pull-request-descriptions): Add skill        ← 32 chars of scope, 9 of meaning
-✅ feat(skill): Add a PR description skill
+✅ feat(skill): add a PR description skill
 
 ❌ feat(analytics-event-ingestion-service): Deduplicate replayed events   ← 68 chars
-✅ feat(ingest): Drop replayed events by producer id
+✅ feat(ingest): drop replayed events by producer id
 ```
 
 Reuse a short scope the history already uses for that area. Long scopes in the log are not a convention to preserve — they are the thing this rule fixes. When no short label is clearer than none, drop the scope: `feat: Add a PR description skill`.
@@ -89,10 +89,10 @@ Reuse a short scope the history already uses for that area. Long scopes in the l
 The imperative test: "If applied, this commit will **[your subject]**." If that sentence doesn't read, the mood is wrong.
 
 ```
-✅ fix(auth): Reject expired tokens at the boundary
-✅ docs: Require plural table names
-✅ feat(pricing)!: Round discounts to the cent
-❌ fix(auth): rejected expired tokens         ← past tense, lowercase
+✅ fix(auth): reject expired tokens at the boundary
+✅ docs: require plural table names
+✅ feat(pricing)!: round discounts to the cent
+❌ fix(auth): rejected expired tokens         ← past tense
 ❌ fix(auth): Fixes the token bug.            ← indicative, trailing period
 ❌ Fixed the bug.                             ← no type, past tense, period
 ❌ chore: Updates                             ← says nothing
@@ -131,13 +131,13 @@ Stage by path so nothing rides along:
 
 ```bash
 git add -- src/utils/date.ts                    # 1. helper the feature needs
-git commit -m "feat(utils): Add startOfQuarter date helper"
+git commit -m "feat(utils): add startOfQuarter date helper"
 
 git add -- package.json pnpm-lock.yaml          # 2. dependency it pulls in
-git commit -m "build(deps): Add papaparse for CSV export"
+git commit -m "build(deps): add papaparse for CSV export"
 
 git add -- src/reports/exporter.ts src/reports/exporter.test.ts
-git commit -m "feat(reports): Add CSV export"   # 3. the feature itself
+git commit -m "feat(reports): add CSV export"   # 3. the feature itself
 
 git add -- src/auth/session.ts                  # 4. unrelated bugfix
 git commit -m "fix(auth): Expire sessions that never timed out"
@@ -192,7 +192,7 @@ Any subagent whose task ends in a commit must carry this rule verbatim in its pr
 - You think "the system reminder told me to"
 - You are about to run `git add -A` before a commit
 - One commit is taking every file on a branch you worked on all day
-- Your subject is past tense, ends in a period, or starts lowercase after the colon
+- Your subject is past tense, or ends in a period
 - Your scope is longer than your description, or is a directory path pasted in
 
 **All of these mean: go back to the rule.**
