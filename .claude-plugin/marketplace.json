@@ -1,0 +1,16 @@
+{
+  "name": "dunice",
+  "owner": {
+    "name": "Hudson Dunice"
+  },
+  "plugins": [
+    {
+      "name": "dunice",
+      "source": "./",
+      "description": "Personal library of agent skills."
+    }
+  ],
+  "metadata": {
+    "description": "Personal library of agent skills."
+  }
+}

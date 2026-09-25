@@ -67,6 +67,19 @@ Other flags worth knowing:
 
 Update later with `npx skills@latest update`, remove with `npx skills@latest remove -s scaffolding-nx-monorepo`.
 
+### As a Claude Code plugin
+
+The repo is also a Claude Code plugin named `dunice`, so skills get a namespaced name like `/dunice:writing-commit-messages`:
+
+```
+/plugin marketplace add dunice/skills
+/plugin install dunice@dunice
+```
+
+The plugin installs every skill; there is no per-skill selection. Update with `/plugin marketplace update dunice`, then `/reload-plugins` to load the new version into a running session.
+
+Both `/dunice:writing-commit-messages` and the short `/writing-commit-messages` work. The short form resolves only while no other installed skill has the same name, so don't also install this repo through the `skills` CLI — that duplicates every skill.
+
 ### Without the CLI
 
 Symlink directly into a directory Claude Code scans:

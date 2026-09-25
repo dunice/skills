@@ -1,0 +1,8 @@
+{
+  "name": "dunice",
+  "description": "Personal library of agent skills.",
+  "author": {
+    "name": "Hudson Dunice"
+  },
+  "repository": "https://github.com/dunice/skills"
+}

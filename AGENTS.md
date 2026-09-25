@@ -4,7 +4,7 @@ Guidance for agents working in this repository.
 
 ## What this repo is
 
-A personal library of Agent Skills. It ships **no code and no build** — every file here is either a `SKILL.md`, a reference document, or a helper script belonging to one skill. There is nothing to install, compile, or test.
+A personal library of Agent Skills. It ships **no code and no build** — every file here is either a `SKILL.md`, a reference document, a helper script belonging to one skill, or one of the two Claude Code plugin manifests. There is nothing to install, compile, or test.
 
 ## Structure
 
@@ -13,6 +13,8 @@ skills/<skill-name>/SKILL.md          # required
 skills/<skill-name>/references/*.md   # optional, loaded on demand
 skills/<skill-name>/scripts/*         # optional, executable
 skills/<skill-name>/assets/*          # optional, files to copy verbatim
+.claude-plugin/plugin.json            # makes the repo the `dunice` plugin
+.claude-plugin/marketplace.json       # lets `/plugin marketplace add dunice/skills` find it
 ```
 
 - Directory name **must** equal the frontmatter `name`.
@@ -65,6 +67,14 @@ Verify after any structural change — this lists what the CLI can see without i
 npx skills@latest add dunice/skills --list
 ```
 
+The repo must also stay a valid Claude Code plugin, which exposes every skill as `dunice:<skill-name>`. The plugin loads skills from `skills/` by convention, so a new skill needs no manifest change. Verify after touching `.claude-plugin/`:
+
+```sh
+claude plugin validate .
+```
+
+The `version` warning is expected. Leave `version` unset: without it, Claude Code tracks the git commit, so every push reaches installed users without a manual bump.
+
 Note for anyone documenting the CLI: `--skill` takes one name and must be **repeated** for several. A comma-separated list is not split and fails with `No matching skills found`.
 
 ## Adding a skill
@@ -78,4 +88,4 @@ Note for anyone documenting the CLI: `--skill` takes one name and must be **repe
 
 - Markdown only; no linter, formatter, or CI to satisfy.
 - `CLAUDE.md` is a symlink to this file — edit `AGENTS.md`, never the symlink.
-- Do not add package manifests, lockfiles, or tooling config. This repo stays dependency-free.
+- Do not add package manifests, lockfiles, or tooling config. This repo stays dependency-free. The two files in `.claude-plugin/` are the only exception.
