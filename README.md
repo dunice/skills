@@ -24,6 +24,7 @@ One directory per skill. The directory name is the skill name.
 | [`refactoring-safely`](skills/refactoring-safely/SKILL.md) | Restructuring code that already works — pin the behavior in tests first, one named move per commit, shape and behavior never in the same commit. |
 | [`writing-commit-messages`](skills/writing-commit-messages/SKILL.md) | About to run `git commit`, amend or reword, or splitting a day of mixed work — one-line Conventional Commits subject by default, no attribution trailers. |
 | [`managing-github-pull-requests`](skills/managing-github-pull-requests/SKILL.md) | Opening or updating a PR with `gh` — draft by default, body from a file, reviewers, labels, screenshots, ready-for-review. |
+| [`automating-browsers-with-agent-browser`](skills/automating-browsers-with-agent-browser/SKILL.md) | Driving a real browser with the `agent-browser` CLI — load its version-matched guide first, one named session per task, re-snapshot after every page change. |
 | [`writing-pull-request-descriptions`](skills/writing-pull-request-descriptions/SKILL.md) | Opening a PR or rewriting its description — self-review and scope gates first, then a four-section body a reviewer can predict the diff from. |
 
 ## Installing
