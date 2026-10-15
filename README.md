@@ -26,6 +26,7 @@ One directory per skill. The directory name is the skill name.
 | [`managing-github-pull-requests`](skills/managing-github-pull-requests/SKILL.md) | Opening or updating a PR with `gh` — draft by default, body from a file, reviewers, labels, screenshots, ready-for-review. |
 | [`automating-browsers-with-agent-browser`](skills/automating-browsers-with-agent-browser/SKILL.md) | Driving a real browser with the `agent-browser` CLI — load its version-matched guide first, one named session per task, re-snapshot after every page change. |
 | [`writing-pull-request-descriptions`](skills/writing-pull-request-descriptions/SKILL.md) | Opening a PR or rewriting its description — self-review and scope gates first, then a four-section body a reviewer can predict the diff from. |
+| [`auditing-cve-pull-requests`](skills/auditing-cve-pull-requests/SKILL.md) | Vetting a PR that bumps dependencies to fix CVEs — verify every copy is patched, hunt breakage base-vs-head, post the verdict as a PR comment. |
 
 ## Installing
 
