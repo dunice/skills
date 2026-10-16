@@ -72,4 +72,4 @@ Claude reads only the frontmatter `description` until a task matches, then loads
 
 ## Adding a skill
 
-See [AGENTS.md](AGENTS.md) for the writing conventions this repo follows.
+See [docs/adding-a-skill.md](docs/adding-a-skill.md) for the steps and [docs/skill-authoring.md](docs/skill-authoring.md) for the writing conventions.
